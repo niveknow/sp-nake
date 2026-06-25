@@ -148,7 +148,7 @@ function draw() {
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 24px "Segoe UI", Arial, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('🐍 HERMES SNAKE', canvas.width / 2, 160);
+        ctx.fillText('🐍 SP-NAKE', canvas.width / 2, 160);
         ctx.font = '16px "Segoe UI", Arial, sans-serif';
         ctx.fillStyle = '#888';
         ctx.fillText('Tap to start!', canvas.width / 2, 200);
