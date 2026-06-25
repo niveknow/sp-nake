@@ -62,23 +62,64 @@ document.addEventListener('keydown', (e) => {
     if (KEY_DIR_MAP[e.key]) {
         e.preventDefault();  // Stop the page from scrolling
         snake.setDirection(KEY_DIR_MAP[e.key]);
+        // Keyboard also starts the game
+        if (currentState === STATE.MENU) startGame();
+        else if (currentState === STATE.GAME_OVER) resetGame();
     }
 });
 
-// Touch/click to start or restart — also initializes audio
-canvas.addEventListener('pointerdown', () => {
+// --- SWIPE & TAP CONTROLS (for iPhone!) ---
+// On a phone, you don't need tiny arrow keys — just swipe where you
+// want the snake to go. A quick tap starts/restarts the game.
+
+let touchStartX = 0;
+let touchStartY = 0;
+const SWIPE_THRESHOLD = 30;  // Pixels you must drag before it counts as a swipe
+
+/** Start the game from MENU state */
+function startGame() {
+    audio.init();
+    food.spawn(snake.body);
+    currentState = STATE.PLAYING;
+    lastTickTime = performance.now();
+}
+
+// pointerdown — record where the finger/pointer touched
+canvas.addEventListener('pointerdown', (e) => {
+    touchStartX = e.clientX;
+    touchStartY = e.clientY;
+});
+
+// pointerup — check if it was a tap or a swipe
+canvas.addEventListener('pointerup', (e) => {
     audio.init();
 
-    if (currentState === STATE.MENU) {
-        // First interaction — spawn food and start
-        food.spawn(snake.body);
-        currentState = STATE.PLAYING;
-        lastTickTime = performance.now();
-    } else if (currentState === STATE.GAME_OVER) {
-        // Restart the game
-        resetGame();
+    const dx = e.clientX - touchStartX;
+    const dy = e.clientY - touchStartY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    if (dist > SWIPE_THRESHOLD) {
+        // --- SWIPE --- change snake direction
+        if (currentState === STATE.PLAYING) {
+            // Which direction did they swipe? Pick the strongest axis
+            if (Math.abs(dx) > Math.abs(dy)) {
+                snake.setDirection(dx > 0 ? DIR.RIGHT : DIR.LEFT);
+            } else {
+                snake.setDirection(dy > 0 ? DIR.DOWN : DIR.UP);
+            }
+        }
+    } else {
+        // --- TAP --- start or restart the game
+        if (currentState === STATE.MENU) {
+            startGame();
+        } else if (currentState === STATE.GAME_OVER) {
+            resetGame();
+        }
     }
 });
+
+// Prevent scrolling when touching the canvas on iPhone
+canvas.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
 
 // --- GAME FUNCTIONS ---
 
