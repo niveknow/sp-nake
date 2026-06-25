@@ -1,5 +1,12 @@
 # 🐍 SP-NAKE
 
+[![▶️ PLAY NOW](https://img.shields.io/badge/▶️_PLAY_NOW-ff4081?style=for-the-badge&logo=github&logoColor=white)](https://niveknow.github.io/sp-nake/)
+[![Star ⭐](https://img.shields.io/badge/⭐_Star_This_Repo-333?style=for-the-badge)](https://github.com/niveknow/sp-nake)
+
+**👉 [CLICK HERE TO PLAY!](https://niveknow.github.io/sp-nake/)** 👈
+
+---
+
 ### A Snake Game Starring **Sterling** 🧒✨
 
 Hi! This game was made for a super cool 10-year-old guy named **Sterling** who loves video games and sushi!
