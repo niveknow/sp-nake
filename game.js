@@ -29,6 +29,10 @@ const food = new FoodManager();
 const score = new ScoreManager();
 const audio = new AudioManager();
 
+// Floating text when food is eaten — shows what yummy thing Sterling just ate
+let foodMessage = '';
+let foodMessageTimer = 0;
+
 // Define game states
 const STATE = {
     MENU:      0,   // Title screen — waiting for player
@@ -107,7 +111,10 @@ function update() {
         // NOM NOM — the snake ate the food!
         snake.grow();
         score.increment();
-        audio.playEat();
+        // Show what yummy thing Sterling just ate!
+        foodMessage = FOOD_NAMES[food.type];
+        foodMessageTimer = 30;  // Show for ~30 frames
+        audio.playEat(food.type);
         food.spawn(snake.body);  // New snack appears!
     }
 }
@@ -151,6 +158,16 @@ function draw() {
         food.draw(ctx);
         snake.draw(ctx);
         score.draw(ctx, canvas.width);
+
+        // Floating food name — "SUSHI!" / "CANDY!" / "ICE CREAM!"
+        if (foodMessageTimer > 0) {
+            foodMessageTimer--;
+            const alpha = Math.min(1, foodMessageTimer / 15);  // Fade out
+            ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+            ctx.font = 'bold 14px "Segoe UI", Arial, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`🍽 ${foodMessage}!`, canvas.width / 2, 180);
+        }
 
     } else if (currentState === STATE.GAME_OVER) {
         // --- GAME OVER SCREEN ---

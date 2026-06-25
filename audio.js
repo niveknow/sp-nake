@@ -60,10 +60,21 @@ class AudioManager {
     }
 
     /** Happy ascending beep — snake ate some food! */
-    playEat() {
-        // Two quick ascending notes: dun-ding!
-        this._playTone(523, 0.1);  // Middle C (C4)
-        setTimeout(() => this._playTone(659, 0.15), 80);  // E4
+    playEat(foodType) {
+        if (foodType === FOOD_TYPE.SUSHI) {
+            // 🍣 Sushi — two quick ascending beeps: ding-ding!
+            this._playTone(523, 0.08);  // C5
+            setTimeout(() => this._playTone(784, 0.1), 60);  // G5
+        } else if (foodType === FOOD_TYPE.CANDY) {
+            // 🍬 Candy — bright high-pitched sparkle!
+            this._playTone(880, 0.06, 'square');   // A5
+            setTimeout(() => this._playTone(1047, 0.08, 'square'), 50); // C6
+            setTimeout(() => this._playTone(1319, 0.1, 'square'), 100); // E6
+        } else if (foodType === FOOD_TYPE.ICE_CREAM) {
+            // 🍨 Ice cream — smooth low mmm-nom!
+            this._playTone(330, 0.15, 'triangle'); // E4
+            setTimeout(() => this._playTone(392, 0.2, 'triangle'), 80); // G4
+        }
     }
 
     /** Sad descending tone — snake hit a wall or itself */
