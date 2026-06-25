@@ -26,6 +26,11 @@ const DIR = {
 
 class Snake {
     constructor() {
+        // Load Sterling's face for the snake head
+        this.headImg = new Image();
+        this.headImg.src = 'assets/sterling_head.png';
+        this.headImgLoaded = false;
+        this.headImg.onload = () => { this.headImgLoaded = true; };
         this.reset();
     }
 
@@ -111,44 +116,28 @@ class Snake {
             const x = seg.x * CELL_SIZE;
             const y = seg.y * CELL_SIZE;
 
-            // Head is a different shade so the player can see which end is which
             if (i === 0) {
-                ctx.fillStyle = '#66bb6a';  // Brighter green for the head
-            } else {
-                ctx.fillStyle = '#4caf50';  // Standard green for the body
-            }
-
-            // Rounded rectangle for each segment — looks nicer than squares
-            const pad = 1;  // Small gap between segments
-            ctx.beginPath();
-            ctx.roundRect(x + pad, y + pad, CELL_SIZE - pad * 2, CELL_SIZE - pad * 2, 3);
-            ctx.fill();
-
-            // Draw eyes on the head — helps show which direction the snake faces
-            if (i === 0) {
-                ctx.fillStyle = '#fff';
-                const eyeSize = 3;
-                const eyeOffset = 4;
-                // Eyes on the front-facing side of the head
-                let ex1, ey1, ex2, ey2;
-                if (this.direction.x === 1) { // Facing right
-                    ex1 = x + 12; ey1 = y + 5;
-                    ex2 = x + 12; ey2 = y + 15;
-                } else if (this.direction.x === -1) { // Facing left
-                    ex1 = x + 4; ey1 = y + 5;
-                    ex2 = x + 4; ey2 = y + 15;
-                } else if (this.direction.y === -1) { // Facing up
-                    ex1 = x + 5; ey1 = y + 4;
-                    ex2 = x + 15; ey2 = y + 4;
-                } else { // Facing down
-                    ex1 = x + 5; ey1 = y + 12;
-                    ex2 = x + 15; ey2 = y + 12;
+                // --- HEAD: Draw Sterling's face, rotated to face the direction ---
+                if (this.headImgLoaded) {
+                    ctx.save();
+                    ctx.translate(x + CELL_SIZE / 2, y + CELL_SIZE / 2);
+                    // Rotate to face the direction of movement
+                    const angle = Math.atan2(this.direction.y, this.direction.x);
+                    ctx.rotate(angle);
+                    // Draw Sterling's face centered, scaled to fill the cell
+                    ctx.drawImage(this.headImg, -CELL_SIZE / 2, -CELL_SIZE / 2, CELL_SIZE, CELL_SIZE);
+                    ctx.restore();
+                } else {
+                    // Fallback: bright green square while image loads
+                    ctx.fillStyle = '#66bb6a';
+                    ctx.fillRect(x + 1, y + 1, CELL_SIZE - 2, CELL_SIZE - 2);
                 }
+            } else {
+                // --- BODY: Green rounded rectangles ---
+                ctx.fillStyle = '#4caf50';
+                const pad = 1;
                 ctx.beginPath();
-                ctx.arc(ex1, ey1, eyeSize, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(ex2, ey2, eyeSize, 0, Math.PI * 2);
+                ctx.roundRect(x + pad, y + pad, CELL_SIZE - pad * 2, CELL_SIZE - pad * 2, 3);
                 ctx.fill();
             }
         }
